@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>GWC Scanner</title>
+  <script src="https://cdn.jsdelivr.net/npm/qr-scanner@1.4.2/qr-scanner.umd.min.js"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background: #000; height: 100vh; overflow: hidden; font-family: sans-serif; color: #fff; }
+    #video { width: 100vw; height: 100vh; object-fit: cover; position: fixed; top: 0; left: 0; }
+    #overlay { position: fixed; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; pointer-events: none; }
+    #frame { width: 240px; height: 240px; border: 3px solid #4ade80; border-radius: 16px; box-shadow: 0 0 0 9999px rgba(0,0,0,0.55); }
+    #hint { margin-top: 20px; font-size: 15px; color: #d1fae5; font-weight: 600; }
+    #cancelBtn { position: fixed; bottom: 40px; left: 50%; transform: translateX(-50%); background: rgba(255,255,255,0.15); border: 2px solid rgba(255,255,255,0.5); color: #fff; padding: 14px 40px; border-radius: 999px; font-size: 16px; font-weight: 700; cursor: pointer; }
+    #status { position: fixed; top: 20px; left: 0; right: 0; text-align: center; font-size: 13px; color: #fde68a; }
+  </style>
+</head>
+<body>
+  <video id="video" playsinline muted></video>
+  <div id="overlay">
+    <div id="frame"></div>
+    <p id="hint">Point at a QR code</p>
+  </div>
+  <p id="status"></p>
+  <button id="cancelBtn" onclick="cancel()">Cancel</button>
+
+<script>
+  var APP_URL = 'https://script.google.com/macros/s/AKfycbz9A39PLeVpzg3Y4gl8pwzfsn56oZ2rgpNO4ITCUzi-sXZzIgAkxjWcheW3b0EksOueJw/exec';
+
+  var scanner = new QrScanner(
+    document.getElementById('video'),
+    function(result) {
+      scanner.stop();
+      if (navigator.vibrate) navigator.vibrate(150);
+      document.getElementById('hint').textContent = 'Got it! Returning...';
+      window.location.replace(APP_URL + '?scannedId=' + encodeURIComponent(result.data.trim()));
+    },
+    {
+      returnDetailedScanResult: true,
+      preferredCamera: 'environment',
+      highlightScanRegion: true,
+      highlightCodeOutline: true
+    }
+  );
+
+  scanner.start().catch(function(err) {
+    document.getElementById('status').textContent = 'Camera error: ' + err.message;
+  });
+
+  function cancel() {
+    scanner.stop();
+    window.location.replace(APP_URL);
+  }
+</script>
+</body>
+</html>
