@@ -27,6 +27,13 @@
   <button id="cancelBtn" onclick="cancel()">Cancel</button>
 
 <script>
+  var TOKEN = 'gwc2026';
+  var params = new URLSearchParams(window.location.search);
+  if (params.get('token') !== TOKEN) {
+    document.body.innerHTML = '<p style="color:#fff;text-align:center;padding:40px">Access denied.</p>';
+    throw new Error('Invalid token');
+  }
+
   var APP_URL = 'https://script.google.com/a/macros/gordonwoodco.com/s/AKfycbz9A39PLeVpzg3Y4gl8pwzfsn56oZ2rgpNO4ITCUzi-sXZzIgAkxjWcheW3b0EksOueJw/exec';
 
   var scanner = new QrScanner(
