@@ -35,7 +35,10 @@
       scanner.stop();
       if (navigator.vibrate) navigator.vibrate(150);
       document.getElementById('hint').textContent = 'Got it! Returning...';
-      window.location.replace(APP_URL + '?scannedId=' + encodeURIComponent(result.data.trim()));
+      document.getElementById('status').textContent = 'Code: ' + result.data.trim();
+      setTimeout(function() {
+        window.location.replace(APP_URL + '?scannedId=' + encodeURIComponent(result.data.trim()));
+      }, 2000);
     },
     {
       returnDetailedScanResult: true,
